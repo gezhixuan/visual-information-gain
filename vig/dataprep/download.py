@@ -30,7 +30,7 @@ JOBS = [
     ("data", "open-web-math/open-web-math", "dataset", "text/open-web-math", None),
     ("data", "bigcode/starcoderdata", "dataset", "text/starcoderdata", ["python/*", "markdown/*", "README.md"]),
     ("data", "wikimedia/wikipedia", "dataset", "text/wikipedia-en", ["20231101.en/*", "README.md"]),
-    ("data", "Qwen/Qwen3-0.6B-Base", "model", "Qwen3-0.6B-Base", ["*.json", "*.txt"]),          # tokenizer only
+    ("data", "Qwen/Qwen2.5-0.5B", "model", "Qwen2.5-0.5B", ["*.json", "*.txt"]),                # tokenizer only
     ("data", "google/siglip2-so400m-patch16-naflex", "model", "siglip2-so400m-patch16-naflex", None),
     ("public", "google/gemma-4-12B", "model", "gemma-4-12B", None),
     ("public", "google/gemma-4-12B-it", "model", "gemma-4-12B-it", None),

@@ -84,7 +84,7 @@ class ModelConfig:
     n_heads: int = 8
     n_kv_heads: int = 8          # == n_heads -> MHA; < n_heads -> GQA
     d_ff: int = 2816             # SwiGLU hidden width (3 matrices of d_model x d_ff)
-    vocab_size: int = 151_936    # Qwen3: 151,669 used, padded to 151,936
+    vocab_size: int = 151_936    # Qwen2.5: 151,665 used, padded to 151,936
     tie_embeddings: bool = True
     rope_theta: float = 10_000.0
     seq_len: int = 4096

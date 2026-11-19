@@ -54,6 +54,7 @@ python -m vig.eval_vig --summarize
 python -m vig.eval_answers --runs d1024_L12 d1280_L16 d1792_L16 d2048_L20 d1280_L16_siglip d1024_L12_bs512 --tokens 40
 python -m vig.eval_answers --runs d1280_L16 d1280_L16_siglip --tokens 1,2,5,10,20,30
 python -m vig.eval_answers --runs d1024_L12_s20 d1024_L12_seed1 d1024_L12_mix_doc d1024_L12_mix_cap d1024_L12_siglip --tokens 20
+python -m vig.eval_answers --runs d1024_L12_p16 --tokens 20 --val_cache "$(python -c 'from vig import paths; print(paths.VAL_SETS.replace("_32.pt", "_32_p16.pt"))')"
 python -m vig.eval_answers --summarize
 
 # ---------------------------------------------------------------------------------------------------- 5. public models

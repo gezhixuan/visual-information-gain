@@ -61,7 +61,7 @@ def write_text(root, source, topic, n_docs, rng, max_len, split):
     arr.tofile(os.path.join(d, f"{split}.bin"))
     np.asarray(starts, dtype=np.int64).tofile(os.path.join(d, f"{split}.idx"))
     if split == "train":
-        json.dump({"tokenizer": "Qwen3-0.6B-Base", "n_tokens": int(len(arr)), "n_docs": n_docs, "topic": topic},
+        json.dump({"tokenizer": "Qwen2.5-0.5B", "n_tokens": int(len(arr)), "n_docs": n_docs, "topic": topic},
                   open(os.path.join(d, "meta.json"), "w"))
 
 

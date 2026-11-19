@@ -16,4 +16,4 @@ OUT = os.environ.get("VIG_OUT", "outputs")
 SHARDS = os.path.join(DATA, "shards")
 VAL_SETS = os.path.join(OUT, "val_sets_32.pt")           # the fixed validation batches every evaluation shares
 SIGLIP = os.path.join(MODELS, "siglip2-so400m-patch16-naflex")
-TOKENIZER = os.path.join(MODELS, "Qwen3-0.6B-Base")
+TOKENIZER = os.path.join(MODELS, "Qwen2.5-0.5B")

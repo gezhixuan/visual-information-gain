@@ -30,7 +30,7 @@ TEXT_OUT_PILOT = f"{SHARDS_ROOT}/text_pilot"
 LOG_DIR = f"{DATA_ROOT}/logs"
 
 TOKENIZER_PATH = paths.TOKENIZER
-TOKENIZER_NAME = "Qwen3-0.6B-Base"
+TOKENIZER_NAME = "Qwen2.5-0.5B"
 VISION_START, VISION_END, IMAGE_PAD, EOS = 151652, 151653, 151655, 151643
 VOCAB_SIZE = 151936
 
@@ -68,7 +68,7 @@ _TOK = None
 
 
 def get_tokenizer():
-    """Qwen3 tokenizer (fast). Verifies the three vision tokens and EOS on first load."""
+    """Qwen2.5 tokenizer (fast). Verifies the three vision tokens and EOS on first load."""
     global _TOK
     if _TOK is None:
         os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")

@@ -26,12 +26,28 @@ CONDS = ("real", "permuted", "uniform")
 EOS_QWEN = 151643
 
 
+def val_mm() -> dict:
+    """The validation batches of our own evaluation, one per image type."""
+    return torch.load(paths.VAL_SETS, map_location="cpu", weights_only=False)["mm"]
+
+
+def common_tokens() -> dict:
+    """{topic: tokens our own evaluation scores per sample (text, end-of-image and end-of-sample tokens), in cache order}."""
+    src = val_mm()
+    out = {}
+    for topic, batch in src.items():
+        sid, tid, lm = batch["sample_id"].numpy(), batch["topic_id"].numpy(), batch["loss_mask"].numpy().astype(bool)
+        out[topic] = np.array([int(lm[b][(sid[b] == s) & (tid[b] >= 0)].sum()) for b in range(sid.shape[0]) for s in np.unique(sid[b][tid[b] >= 0])])
+        assert out[topic].sum() == lm.sum()
+    return out
+
+
 def load_samples(max_samples: int = 0, topics: str = "") -> dict:
     """{topic: [(text, uint8 image array)]} recovered from the shared cache, in cache order."""
     from transformers import AutoTokenizer
     from .val_cache import recover_samples
     tok = AutoTokenizer.from_pretrained(paths.TOKENIZER)
-    src = torch.load(paths.VAL_SETS, map_location="cpu", weights_only=False)["mm"]
+    src = val_mm()
     out = {}
     for topic, batch in src.items():
         if topics and topic not in topics.split(","): continue
@@ -160,15 +176,16 @@ def run_model(spec: str, samples: dict, out_dir: str, budget: int):
 
 def summarize(out_dir: str):
     import collections, glob
+    ref = common_tokens()
     for path in sorted(glob.glob(out_dir + "*.jsonl")):
-        agg = collections.defaultdict(lambda: [0.0, 0, 0, 0])
+        agg = collections.defaultdict(lambda: [0.0, 0, 0, 0])      # summed loss, tokens of the model, common tokens, samples
         for l in open(path):
-            r = json.loads(l); a = agg[(r["topic"], r["cond"])]; a[0] += r["loss_sum"]; a[1] += r["n_tok"]; a[2] += r["n_char"]; a[3] += 1
+            r = json.loads(l); a = agg[(r["topic"], r["cond"])]; a[0] += r["loss_sum"]; a[1] += r["n_tok"]; a[2] += int(ref[r["topic"]][r["i"]]); a[3] += 1
         print(f"\n== {os.path.basename(path)[:-6]}   (nats per token; share = VIG_total / L_unif; layout fraction = VIG_layout / VIG_total)")
         print("topic      n   L_real  L_perm  L_unif   total  layout  global   share  layout_frac")
         for t in sorted({k[0] for k in agg}):
             if not all((t, c) in agg for c in CONDS): continue
-            L = {c: agg[(t, c)][0] / agg[(t, c)][1] for c in CONDS}; tot = L["uniform"] - L["real"]; lay = L["permuted"] - L["real"]
+            L = {c: agg[(t, c)][0] / agg[(t, c)][2] for c in CONDS}; tot = L["uniform"] - L["real"]; lay = L["permuted"] - L["real"]
             print(f"{t:8s} {agg[(t, 'real')][3]:4d}  {L['real']:6.3f}  {L['permuted']:6.3f}  {L['uniform']:6.3f}  {tot:6.3f}  {lay:6.3f}  {tot - lay:6.3f}  {100 * tot / L['uniform']:5.1f}%  {lay / tot if tot > 0 else float('nan'):6.2f}")
 
 
