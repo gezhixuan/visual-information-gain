@@ -1,0 +1,9 @@
+# Versions the paper's runs used. Flex attention needs torch 2.6 or newer.
+torch==2.6.0
+torchvision
+transformers==5.12.1
+numpy
+pillow
+pyarrow
+safetensors
+huggingface_hub
